@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Productos | Skin Care</title>
+    <link rel="stylesheet" href="css/estilos.css">
+    <link rel="stylesheet" href="css/estilos.css">
+
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        fetch("php/obtener_productos.php")
+            .then(res => res.json())
+            .then(data => {
+                const contenedor = document.getElementById("productos");
+                data.forEach(p => {
+                    const div = document.createElement("div");
+                    div.innerHTML = `
+                        <h3>${p.nombre}</h3>
+                        <img src="img/${p.imagen}" alt="${p.nombre}" width="150"><br>
+                        <p>${p.descripcion}</p>
+                        <p><strong>$${p.precio}</strong></p>
+                        <button onclick='agregarAlCarrito(${p.id})'>Agregar al carrito</button>
+                        <hr>
+                    `;
+                    contenedor.appendChild(div);
+                });
+            });
+    });
+
+    function agregarAlCarrito(id) {
+        let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+        carrito.push(id);
+        localStorage.setItem("carrito", JSON.stringify(carrito));
+        alert("Producto agregado al carrito");
+    }
+    </script>
+</head>
+<body>
+    <h1>Catálogo de Productos - Skin Care</h1>
+    <div id="productos"></div>
+</body>
+</html>

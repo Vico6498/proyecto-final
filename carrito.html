@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Carrito | Skin Care</title>
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+  <div id="menu-navegacion"></div>
+  <script>
+    fetch("php/session-check.php")
+      .then(res => res.json())
+      .then(data => {
+        let menu = `
+          <nav style="background-color: #e0f7fa; padding: 10px; margin-bottom: 20px;">
+            <a href="index.html" style="margin-right: 15px;">Inicio</a>
+            <a href="productos.html" style="margin-right: 15px;">Productos</a>
+            <a href="carrito.html" style="margin-right: 15px;">Carrito</a>
+        `;
+        if (data.activo && data.rol === 'admin') {
+          menu += `<a href="admin.html" style="margin-right: 15px;">Admin</a>`;
+        }
+        menu += data.activo
+          ? `<a href="php/logout.php" style="color: red;">Cerrar Sesión</a>`
+          : `<a href="login.html" style="margin-left: 15px;">Iniciar Sesión</a>`;
+        menu += `</nav>`;
+        document.getElementById("menu-navegacion").innerHTML = menu;
+      });
+  </script>
+
+  <h1>Tu Carrito</h1>
+  <div id="lista-carrito"></div>
+
+  <button onclick="vaciarCarrito()">Vaciar Carrito</button>
+  <button onclick="confirmarCompra()">Finalizar Compra</button>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+      const contenedor = document.getElementById("lista-carrito");
+
+      if (carrito.length === 0) {
+        contenedor.innerHTML = "<p>El carrito está vacío.</p>";
+        return;
+      }
+
+      fetch("php/obtener_productos.php")
+        .then(res => res.json())
+        .then(productos => {
+          let html = "";
+          let total = 0;
+
+          carrito.forEach((item, index) => {
+            const producto = productos.find(p => p.id == item.id);
+            if (producto) {
+              const subtotal = producto.precio * item.cantidad;
+              total += subtotal;
+              html += `
+                <div>
+                  <h3>${producto.nombre}</h3>
+                  <img src="img/${producto.imagen}" width="100"><br>
+                  <p>${producto.descripcion}</p>
+                  <p>Precio: $${producto.precio}</p>
+                  <p>Cantidad: 
+                    <input type="number" value="${item.cantidad}" min="1"
+                           onchange="cambiarCantidad(${index}, this.value)">
+                  </p>
+                  <p><strong>Subtotal: $${subtotal.toFixed(2)}</strong></p>
+                  <button onclick="eliminarProducto(${index})">Eliminar</button>
+                  <hr>
+                </div>
+              `;
+            }
+          });
+
+          html += `<h2>Total: $${total.toFixed(2)}</h2>`;
+          contenedor.innerHTML = html;
+        });
+    });
+
+    function cambiarCantidad(index, nuevaCantidad) {
+      let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+      carrito[index].cantidad = parseInt(nuevaCantidad);
+      localStorage.setItem("carrito", JSON.stringify(carrito));
+      location.reload();
+    }
+
+    function eliminarProducto(index) {
+      let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+      carrito.splice(index, 1);
+      localStorage.setItem("carrito", JSON.stringify(carrito));
+      location.reload();
+    }
+
+    function vaciarCarrito() {
+      localStorage.removeItem("carrito");
+      location.reload();
+    }
+
+    function confirmarCompra() {
+    const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+    if (carrito.length === 0) {
+        alert("El carrito está vacío.");
+        return;
+    }
+
+    fetch("php/guardar_compra.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(carrito)
+    })
+    .then(res => res.text())
+    .then(msg => {
+        alert(msg);
+        vaciarCarrito();
+        window.location.href = "productos.html"; // Ir directo a productos
+    });
+}
+
+  </script>
+</body>
+</html>

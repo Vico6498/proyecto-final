@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Iniciar Sesión | Skin Care</title>
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+  <div id="menu-navegacion"></div>
+  <script>
+    fetch("php/session-check.php")
+      .then(res => res.json())
+      .then(data => {
+        let menu = `
+          <nav style="background-color: #e0f7fa; padding: 10px; margin-bottom: 20px;">
+            <a href="index.html" style="margin-right: 15px;">Inicio</a>
+            <a href="productos.html" style="margin-right: 15px;">Productos</a>
+            <a href="carrito.html" style="margin-right: 15px;">Carrito</a>
+        `;
+        if (data.activo && data.rol === 'admin') {
+          menu += `<a href="admin.html" style="margin-right: 15px;">Admin</a>`;
+        }
+        menu += data.activo
+          ? `<a href="php/logout.php" style="color: red;">Cerrar Sesión</a>`
+          : `<a href="login.html" style="margin-left: 15px;">Iniciar Sesión</a>`;
+        menu += `</nav>`;
+        document.getElementById("menu-navegacion").innerHTML = menu;
+      });
+  </script>
+
+  <h1>Iniciar Sesión</h1>
+
+  <form action="php/login.php" method="POST">
+    <label for="usuario">Correo Electrónico:</label><br>
+    <input type="text" id="usuario" name="usuario" placeholder="Tu email" required><br><br>
+
+    <label for="clave">Contraseña:</label><br>
+    <input type="password" id="clave" name="clave" placeholder="Tu contraseña" required><br><br>
+
+    <button type="submit">Iniciar Sesión</button>
+  </form>
+
+  <p>¿No tienes cuenta? <a href="registro.html">Regístrate aquí</a></p>
+</body>
+</html>

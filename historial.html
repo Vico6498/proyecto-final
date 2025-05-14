@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Historial de Compras | Skin Care</title>
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+  <div id="menu-navegacion"></div>
+  <script>
+    // Menú dinámico
+    fetch("php/session-check.php")
+      .then(res => res.json())
+      .then(data => {
+        if (!data.activo || data.rol !== "admin") {
+          window.location.href = "index.html"; // Redirigir si no es admin
+        }
+
+        let menu = `
+          <nav style="background-color: #e0f7fa; padding: 10px; margin-bottom: 20px;">
+            <a href="index.html" style="margin-right: 15px;">Inicio</a>
+            <a href="productos.html" style="margin-right: 15px;">Productos</a>
+            <a href="carrito.html" style="margin-right: 15px;">Carrito</a>
+            <a href="admin.html" style="margin-right: 15px;">Admin</a>
+            <a href="historial.html" style="margin-right: 15px;">Historial</a>
+            <a href="php/logout.php" style="color: red;">Cerrar Sesión</a>
+          </nav>
+        `;
+        document.getElementById("menu-navegacion").innerHTML = menu;
+      });
+  </script>
+
+  <h1>Historial de Compras</h1>
+  <table border="1" cellpadding="5">
+    <thead>
+      <tr>
+        <th>Producto</th>
+        <th>Cantidad</th>
+        <th>Fecha</th>
+      </tr>
+    </thead>
+    <tbody id="tabla-compras"></tbody>
+  </table>
+
+  <script>
+    fetch("php/historial_compras.php")
+      .then(res => res.json())
+      .then(data => {
+        const tabla = document.getElementById("tabla-compras");
+        if (data.length === 0) {
+          tabla.innerHTML = "<tr><td colspan='3'>No hay compras registradas.</td></tr>";
+          return;
+        }
+
+        data.forEach(item => {
+          const fila = `
+            <tr>
+              <td>${item.nombre}</td>
+              <td>${item.cantidad}</td>
+              <td>${item.fecha}</td>
+            </tr>
+          `;
+          tabla.innerHTML += fila;
+        });
+      });
+  </script>
+</body>
+</html>

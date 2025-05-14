@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Panel de Administración | Skin Care</title>
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+  <div id="menu-navegacion"></div>
+  <script>
+    fetch("php/session-check.php")
+      .then(res => res.json())
+      .then(data => {
+        if (!data.activo || data.rol !== "admin") {
+          window.location.href = "index.html";
+        }
+        let menu = `
+          <nav style="background-color: #e0f7fa; padding: 10px; margin-bottom: 20px;">
+            <a href="index.html">Inicio</a>
+            <a href="productos.html">Productos</a>
+            <a href="carrito.html">Carrito</a>
+            <a href="admin.html">Admin</a>
+            <a href="historial.html">Historial</a>
+            <a href="php/logout.php" style="color:red">Cerrar Sesión</a>
+          </nav>`;
+        document.getElementById("menu-navegacion").innerHTML = menu;
+      });
+  </script>
+
+  <h1>Agregar o Editar Producto</h1>
+
+  <form id="form-producto" action="php/agregar_o_actualizar.php" method="POST" enctype="multipart/form-data">
+    <input type="hidden" name="id" id="id">
+    <label>Nombre:</label><br>
+    <input type="text" name="nombre" id="nombre" required><br><br>
+
+    <label>Descripción:</label><br>
+    <textarea name="descripcion" id="descripcion" required></textarea><br><br>
+
+    <label>Precio:</label><br>
+    <input type="number" step="0.01" name="precio" id="precio" required><br><br>
+
+    <label>Stock:</label><br>
+    <input type="number" name="stock" id="stock" required><br><br>
+
+    <label>Imagen:</label><br>
+    <input type="file" name="imagen" id="imagen"><br><br>
+
+    <button type="submit">Guardar Producto</button>
+  </form>
+
+  <h2>Productos Existentes</h2>
+  <div id="lista-productos"></div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      cargarProductos();
+    });
+
+    function cargarProductos() {
+      fetch("php/obtener_productos.php")
+        .then(res => res.json())
+        .then(data => {
+          const lista = document.getElementById("lista-productos");
+          lista.innerHTML = "";
+          data.forEach(p => {
+            lista.innerHTML += `
+              <div style="border:1px solid #ccc; padding:10px; margin:10px;">
+                <strong>${p.nombre}</strong> - $${p.precio}<br>
+                <em>Stock:</em> ${p.stock}<br>
+                <p>${p.descripcion}</p>
+                <img src="img/${p.imagen}" width="100"><br>
+                <button onclick='editarProducto(${JSON.stringify(p)})'>Editar</button>
+              </div>
+            `;
+          });
+        });
+    }
+
+    function editarProducto(producto) {
+      document.getElementById("id").value = producto.id;
+      document.getElementById("nombre").value = producto.nombre;
+      document.getElementById("descripcion").value = producto.descripcion;
+      document.getElementById("precio").value = producto.precio;
+      document.getElementById("stock").value = producto.stock;
+      // NOTA: no se puede prellenar el input de tipo file (imagen)
+      window.scrollTo(0, 0);
+    }
+  </script>
+</body>
+</html>

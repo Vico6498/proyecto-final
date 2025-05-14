@@ -1,0 +1,92 @@
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f6f9fc;
+    color: #333;
+    padding: 20px;
+}
+
+/* Títulos */
+h1, h2, h3 {
+    color: #0a2e36;
+    margin-bottom: 10px;
+}
+
+/* Formularios */
+form {
+    background-color: #fff;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 500px;
+    margin-bottom: 30px;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="password"],
+input[type="file"],
+textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button {
+    background-color: #2a9d8f;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+button:hover {
+    background-color: #21867a;
+}
+
+/* Productos */
+#productos div,
+#lista-carrito div {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+    max-width: 400px;
+}
+
+#productos img,
+#lista-carrito img {
+    border-radius: 5px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+/* Botones de acción */
+a, button {
+    display: inline-block;
+    margin-top: 10px;
+    text-decoration: none;
+}
+
+/* Enlaces */
+a {
+    color: #264653;
+    font-weight: bold;
+}
+
+a:hover {
+    text-decoration: underline;
+}

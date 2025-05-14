@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Inicio | Skin Care</title>
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+  <div id="menu-navegacion"></div>
+  <script>
+    fetch("php/session-check.php")
+      .then(res => res.json())
+      .then(data => {
+        let menu = `
+          <nav style="background-color: #e0f7fa; padding: 10px; margin-bottom: 20px;">
+            <a href="index.html" style="margin-right: 15px;">Inicio</a>
+            <a href="productos.html" style="margin-right: 15px;">Productos</a>
+            <a href="carrito.html" style="margin-right: 15px;">Carrito</a>
+        `;
+        if (data.activo && data.rol === 'admin') {
+          menu += `<a href="admin.html" style="margin-right: 15px;">Admin</a>`;
+        }
+        menu += data.activo
+          ? `<a href="php/logout.php" style="color: red;">Cerrar Sesión</a>`
+          : `<a href="login.html" style="margin-left: 15px;">Iniciar Sesión</a>`;
+        menu += `</nav>`;
+        document.getElementById("menu-navegacion").innerHTML = menu;
+      });
+  </script>
+
+  <h1>Bienvenido a Skin Care</h1>
+  <p>Explora nuestros productos naturales para el cuidado de la piel.</p>
+</body>
+</html>

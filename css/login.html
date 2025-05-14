@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Iniciar Sesión | Skin Care</title>
+    <link rel="stylesheet" href="css/estilos.css">
+    <script>
+    function validarLogin() {
+        const usuario = document.getElementById("usuario").value.trim();
+        const clave = document.getElementById("clave").value.trim();
+
+        if (usuario === "") {
+            alert("Por favor, escribe tu nombre de usuario.");
+            return false;
+        }
+
+        if (clave === "") {
+            alert("Por favor, escribe tu contraseña.");
+            return false;
+        }
+
+        if (usuario.length < 3) {
+            alert("El usuario debe tener al menos 3 caracteres.");
+            return false;
+        }
+
+        if (clave.length < 5) {
+            alert("La contraseña debe tener al menos 5 caracteres.");
+            return false;
+        }
+
+        return true; // Todo OK, se envía el formulario
+    }
+    </script>
+</head>
+<body>
+    <h1>Iniciar Sesión</h1>
+
+    <form action="php/login.php" method="POST" onsubmit="return validarLogin()">
+        <label for="usuario">Usuario:</label>
+        <input type="text" id="usuario" name="usuario" placeholder="Ingresa tu usuario" required>
+
+        <label for="clave">Contraseña:</label>
+        <input type="password" id="clave" name="clave" placeholder="Ingresa tu contraseña" required>
+
+        <button type="submit">Iniciar Sesión</button>
+    </form>
+
+    <p>Puedes usar <strong>admin</strong> con contraseña <strong>admin123</strong> como ejemplo.</p>
+</body>
+</html>
